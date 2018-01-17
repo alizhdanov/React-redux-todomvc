@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import 'todomvc-app-css/index.css'
 import * as TodoActions from './actions/todos'
 
 // components
 import Main from './components/Main'
 import Footer from './components/Footer'
+import visibility from "./reducers/visibility";
 
 const ENTER_KEY = 13
 
@@ -26,10 +28,8 @@ class App extends Component {
       });
   }
 
-  onToggleAllChange = (event) => {
-      const val = event.target.checked
-      this.setState({toggleAll: val})
-      this.props.actions.toggleAllTodos(val)
+  onToggleAllChange = () => {
+      this.props.actions.toggleAllTodos(!this.props.allCompleted)
   }
 
   handleSubmit = (event) => {
@@ -55,7 +55,7 @@ class App extends Component {
   }
 
   render() {
-    const todos = this.props.todos
+    const { todos, visibility } = this.props
     const {editTodo} = this.props.actions
 
     return (
@@ -73,11 +73,12 @@ class App extends Component {
         </header>
         {/* This section should be hidden by default and shown when there are todos */}
         <Main
-          toggleAll={this.state.toggleAll}
+          toggleAll={this.allCompleted}
           onToggleAllChange={this.onToggleAllChange}
           todos={todos} 
           onTodoChange={editTodo}
-          removeTodo={this.removeTodo} />
+          removeTodo={this.removeTodo}
+          visibility={visibility}/>
         {/* This footer should hidden by default and shown when there are todos */}
         <Footer todos={todos} />
       </section>  
@@ -86,12 +87,19 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  todos: state.todos
-})
+    todos: state.todos,
+    allCompleted: state.todos.reduce((acc, todo) => acc && todo.completed, true),
+    visibility: state.visibility
+});
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(TodoActions, dispatch)
-})
+    actions: bindActionCreators(TodoActions, dispatch)
+});
+
+App.propTypes = {
+    todos: PropTypes.array.isRequired,
+    visibility: PropTypes.string.isRequired
+};
 
 export default connect(
   mapStateToProps,
