@@ -19,7 +19,7 @@ describe('todos', () => {
         expect(result).toEqual(stateAfter)
     })
 
-    test('Shoud toggle todo item', () => {
+    test('Should toggle todo item', () => {
         const stateBefore = [
             {
                 id: 0,
@@ -39,6 +39,25 @@ describe('todos', () => {
         const result = todos(stateBefore, {
             type: 'TOGGLE_TODO',
             id: 0,
+        })
+
+        expect(result).toEqual(stateAfter)
+    })
+
+    test('Should toggle all todo items', () => {
+        const stateBefore = [
+            { id: 0, value: 'test', completed: true},
+            { id: 1, value: 'test', completed: true}
+        ]
+
+        const stateAfter = [
+            { id: 0, value: 'test', completed: true},
+            { id: 1, value: 'test', completed: true}
+        ]
+
+        const result = todos(stateBefore, {
+            type: 'TOGGLE_ALL_TODOS',
+            completed: true
         })
 
         expect(result).toEqual(stateAfter)

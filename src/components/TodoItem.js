@@ -39,7 +39,7 @@ class TodoItem extends Component {
         return (
             <li className={mainClass}>
                 <div className="view">
-                    <input className="toggle" type="checkbox" defaultChecked={completed} />
+                    <input className="toggle" type="checkbox" checked={completed} />
                     <label onDoubleClick={this.hadnleEdit}>{value}</label>
                     <button className="destroy" />
                 </div>

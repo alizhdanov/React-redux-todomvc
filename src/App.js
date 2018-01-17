@@ -9,19 +9,27 @@ import Main from './components/Main'
 import Footer from './components/Footer'
 
 const ENTER_KEY = 13
-let nextTodoId = 0
 
 class App extends Component {
   state = {
-    todoInput: ''
+    todoInput: '',
+    toggleAll: false
   }
 
   handleChange = (event) => {
-    const target = event.target
-    const {name, value} = target
-    this.setState({
-      [name]: value
-    })
+      const target = event.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const name = target.name;
+
+      this.setState({
+          [name]: value
+      });
+  }
+
+  onToggleAllChange = (event) => {
+      const val = event.target.checked
+      this.setState({toggleAll: val})
+      this.props.actions.toggleAllTodos(val)
   }
 
   handleSubmit = (event) => {
@@ -32,20 +40,14 @@ class App extends Component {
     event.preventDefault()
 
     this.props.actions.addTodo(
-      nextTodoId++, 
-      this.state.todoInput
+      this.state.todoInput.trim()
     )
 
     this.setState({todoInput: ''})
   }
 
   onTodoChange = (id, value) => {
-
-    this.props.store.dispatch({
-      type: 'CHANGE_TODO',
-      id,
-      value
-    })
+    this.props.actions.editTodo(id, value)
   }
 
   removeTodo = (id) => {
@@ -70,7 +72,9 @@ class App extends Component {
             autoFocus />
         </header>
         {/* This section should be hidden by default and shown when there are todos */}
-        <Main 
+        <Main
+          toggleAll={this.state.toggleAll}
+          onToggleAllChange={this.onToggleAllChange}
           todos={todos} 
           onTodoChange={editTodo}
           removeTodo={this.removeTodo} />

@@ -2,9 +2,13 @@ import React from 'react'
 
 import TodoItem from './TodoItem'
 
-const Main = ({todos, onTodoChange}) => (
+const Main = ({todos, onTodoChange, toggleAll, onToggleAllChange}) => (
     <section className="main">
-        <input id="toggle-all" className="toggle-all" type="checkbox" />
+        <input id="toggle-all"
+               checked={toggleAll}
+               className="toggle-all"
+               type="checkbox"
+               onChange={onToggleAllChange} />
         <label htmlFor="toggle-all">Mark all as complete</label>
         <ul className="todo-list">
             {/* These are here just to show the structure of the list items */}
