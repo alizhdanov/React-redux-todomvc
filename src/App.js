@@ -26,10 +26,8 @@ class App extends Component {
       });
   }
 
-  onToggleAllChange = (event) => {
-      const val = event.target.checked
-      this.setState({toggleAll: val})
-      this.props.actions.toggleAllTodos(val)
+  onToggleAllChange = () => {
+      this.props.actions.toggleAllTodos(!this.props.allCompleted)
   }
 
   handleSubmit = (event) => {
@@ -73,7 +71,7 @@ class App extends Component {
         </header>
         {/* This section should be hidden by default and shown when there are todos */}
         <Main
-          toggleAll={this.state.toggleAll}
+          toggleAll={this.allCompleted}
           onToggleAllChange={this.onToggleAllChange}
           todos={todos} 
           onTodoChange={editTodo}
@@ -86,7 +84,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  todos: state.todos
+  todos: state.todos,
+  allCompleted: state.todos.reduce((acc, todo) => acc && todo.completed, true)
 })
 
 const mapDispatchToProps = dispatch => ({
