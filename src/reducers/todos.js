@@ -1,3 +1,15 @@
+// @flow
+
+import{
+    ADD_TODO,
+    TOGGLE_TODO,
+    TOGGLE_ALL_TODOS,
+    CHANGE_TODO,
+    REMOVE_TODO
+} from '../actions/todos'
+
+import type { TodoAction } from '../actions/todos'
+
 let nextTodoId = 1
 const initialState = [{
     id: 0,
@@ -5,9 +17,16 @@ const initialState = [{
     completed: false
 }]
 
-const todos = (state = initialState, action) => {
+type Todo = {
+    id: number,
+    value: string,
+    completed: boolean
+}
+type State = Array<Todo>
+
+const todos = (state: State = initialState, action: TodoAction): State => {
     switch(action.type) {
-        case 'ADD_TODO':
+        case ADD_TODO:
             return [
                 ...state,
                 {
@@ -16,7 +35,7 @@ const todos = (state = initialState, action) => {
                     completed: false
                 }
             ]
-        case 'TOGGLE_TODO':
+        case TOGGLE_TODO:
             return state.map(todo => {
                 if (todo.id !== action.id) {
                     return todo
@@ -27,12 +46,12 @@ const todos = (state = initialState, action) => {
                     completed: !todo.completed
                 }
             })
-        case 'TOGGLE_ALL_TODOS':
+        case TOGGLE_ALL_TODOS:
             return state.map(item => {
                 item.completed = action.completed
                 return item
             })
-        case 'CHANGE_TODO':
+        case CHANGE_TODO:
             return state.map(todo => {
                 if (todo.id !== action.id) {
                     return todo
@@ -43,7 +62,7 @@ const todos = (state = initialState, action) => {
                     value: action.value
                 }
             })
-        case 'REMOVE_TODO':
+        case REMOVE_TODO:
             return state.filter(todo => todo.id !== action.id)
         default:
             return state
