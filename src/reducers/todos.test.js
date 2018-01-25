@@ -1,4 +1,5 @@
 import todos from './todos'
+import * as actions from '../actions/todos'
 
 describe('todos', () => {
     test('Should add todo item', () => {
@@ -9,12 +10,9 @@ describe('todos', () => {
             completed: false
         }]
 
-        const result = todos(stateBefore, {
-            type: 'ADD_TODO',
-            id: 0,
-            value: 'test',
-            completed: false
-        })
+
+
+        const result = todos(stateBefore, actions.addTodo('test'));
 
         expect(result).toEqual(stateAfter)
     })
@@ -99,6 +97,22 @@ describe('todos', () => {
             type: 'REMOVE_TODO',
             id: 1
         })
+
+        expect(result).toEqual(stateAfter)
+    })
+
+    test('should remove completed todos', () => {
+        const stateBefore = [
+            { id: 0, value: 'test', completed: false},
+            { id: 1, value: 'test', completed: true},
+            { id: 2, value: 'test', completed: true}
+        ]
+
+        const stateAfter = [
+            { id: 0, value: 'test', completed: false},
+        ]
+
+        const result = todos(stateBefore, actions.removeCompletedTodos())
 
         expect(result).toEqual(stateAfter)
     })

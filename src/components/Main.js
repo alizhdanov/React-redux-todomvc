@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TodoItem from './TodoItem'
 
-const Main = ({todos, onTodoChange, toggleAll, onToggleAllChange}) => {
+const Main = ({todos, onTodoChange, onTodoDelete, onTodoToggle, toggleAll, onToggleAllChange}) => {
     const completedCount = todos.reduce((count, todo) =>
         todo.completed ? count + 1 : count,
         0
@@ -23,6 +23,8 @@ const Main = ({todos, onTodoChange, toggleAll, onToggleAllChange}) => {
                   <TodoItem
                     key={todo.id}
                     onTodoChange={onTodoChange}
+                    onTodoToggle={onTodoToggle}
+                    onTodoDelete={onTodoDelete}
                     {...todo} />
                 ))}
             </ul>

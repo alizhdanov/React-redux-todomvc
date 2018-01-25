@@ -6,11 +6,8 @@ import 'todomvc-app-css/index.css'
 import * as TodoActions from './actions/todos'
 import * as VisibilityActions from './actions/visibility'
 import {
-    VISIBILITY_ALL,
     VISIBILITY_ACTIVE,
-    VISIBILITY_COMPLETED,
-    CHANGE_VISIBILITY_FILTER,
-    VISIBILITY_FILTERS
+    VISIBILITY_COMPLETED
 } from './reducers/visibility'
 
 // components
@@ -27,57 +24,62 @@ class App extends Component {
             toggleAll: false
         }
 
-        this.changeVisibilityFilter = this.changeVisibilityFilter.bind(this)
+        this.changeVisibilityFilter = this.changeVisibilityFilter.bind(this);
+        this.removeCompletedTodos = this.removeCompletedTodos.bind(this);
     }
 
-  handleChange = (event) => {
-      const target = event.target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
-      const name = target.name;
+    handleChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
 
-      this.setState({
-          [name]: value
-      });
-  }
-
-  onToggleAllChange = () => {
-      this.props.actions.toggleAllTodos(!this.props.allCompleted)
-  }
-
-  handleSubmit = (event) => {
-    if (event.keyCode !== ENTER_KEY) {
-      return
+        this.setState({
+            [name]: value
+        });
     }
 
-    event.preventDefault()
+    onToggleAllChange = () => {
+        this.props.actions.toggleAllTodos(!this.props.allCompleted)
+    }
 
-    this.props.actions.addTodo(
-      this.state.todoInput.trim()
-    )
+    handleSubmit = (event) => {
+        if (event.keyCode !== ENTER_KEY) {
+            return
+        }
 
-    this.setState({todoInput: ''})
-  }
+        event.preventDefault()
 
-  onTodoChange = (id, value) => {
-    this.props.actions.editTodo(id, value)
-  }
+        this.props.actions.addTodo(
+            this.state.todoInput.trim()
+        )
 
-  removeTodo = (id) => {
-    this.props.store.dispatch()
-  }
+        this.setState({todoInput: ''})
+    }
 
-  changeVisibilityFilter (filter) {
-      this.props.actions.changeFilter(filter)
-  }
+    onTodoChange = (id, value) => {
+        this.props.actions.editTodo(id, value)
+    }
+
+    removeTodo = (id) => {
+        this.props.actions.removeTodo(id)
+    }
+
+    changeVisibilityFilter(filter) {
+        this.props.actions.changeFilter(filter)
+    }
+
+    removeCompletedTodos() {
+        this.props.actions.removeCompletedTodos()
+    }
 
   render() {
     const { todos, visibility } = this.props;
-    const {editTodo} = this.props.actions;
+    const {editTodo, toggleTodo} = this.props.actions;
 
     const filterFunc = (todos, filter) => {
         if(filter === VISIBILITY_COMPLETED) {
             return todos.filter(todo => todo.completed)
-        } else if (VISIBILITY_ACTIVE) {
+        } else if (filter === VISIBILITY_ACTIVE) {
             return todos.filter(todo => !todo.completed)
         } else {
             return todos
@@ -100,15 +102,24 @@ class App extends Component {
             autoFocus />
         </header>
         {/* This section should be hidden by default and shown when there are todos */}
-        <Main
-          toggleAll={this.allCompleted}
-          onToggleAllChange={this.onToggleAllChange}
-          todos={filteredTodos}
-          onTodoChange={editTodo}
-          removeTodo={this.removeTodo}
-          visibility={visibility}/>
+        {todos.length > 0 &&
+          <Main
+            toggleAll={this.allCompleted}
+            onToggleAllChange={this.onToggleAllChange}
+            todos={filteredTodos}
+            onTodoChange={editTodo}
+            onTodoToggle={toggleTodo}
+            onTodoDelete={this.removeTodo}
+            visibility={visibility}/>
+        }
+
         {/* This footer should hidden by default and shown when there are todos */}
-        <Footer visibility={visibility} changeFilter={this.changeVisibilityFilter} />
+        {todos.length > 0 &&
+          <Footer todos={todos}
+                  visibility={visibility}
+                  changeFilter={this.changeVisibilityFilter}
+                  clear={this.removeCompletedTodos}/>
+        }
       </section>  
     );
   }
@@ -125,7 +136,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 App.propTypes = {
-    dispatch: PropTypes.func.isRequired,
     todos: PropTypes.array.isRequired,
     visibility: PropTypes.string.isRequired
 };

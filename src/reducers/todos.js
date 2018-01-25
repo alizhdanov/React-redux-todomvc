@@ -5,17 +5,25 @@ import{
     TOGGLE_TODO,
     TOGGLE_ALL_TODOS,
     CHANGE_TODO,
-    REMOVE_TODO
+    REMOVE_TODO,
+    REMOVE_COMPLETED_TODOS
 } from '../actions/todos'
 
 import type { TodoAction } from '../actions/todos'
 
-let nextTodoId = 1
-const initialState = [{
-    id: 0,
+let nextTodoId = 0
+const initialState = [
+  {
+    id: 887,
     value: 'Test',
     completed: false
-}]
+  },
+  {
+    id: 947,
+    value: 'Muchaho',
+    completed: true
+  }
+]
 
 type Todo = {
     id: number,
@@ -64,6 +72,8 @@ const todos = (state: State = initialState, action: TodoAction): State => {
             })
         case REMOVE_TODO:
             return state.filter(todo => todo.id !== action.id)
+        case REMOVE_COMPLETED_TODOS:
+            return state.filter(todo => !todo.completed);
         default:
             return state
     }

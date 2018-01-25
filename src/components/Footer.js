@@ -17,29 +17,39 @@ const VisibilityLink = ({name, activeFilter, onClick}) => {
 
 
 // TODO: add router here
-const Footer = ({visibility, changeFilter}) => (
-    <footer className="footer">
-        {/* This should be `0 items left` by default */}
-        <span className="todo-count"><strong>0</strong> item left</span>
-        {/* Remove this if you don't implement routing */}
-        <ul className="filters">
-            {VISIBILITY_FILTERS.map(filter => (
-                <li key={filter}>
-                    <VisibilityLink name={filter} activeFilter={visibility} onClick={(event) => {
-                        event.preventDefault()
-                        changeFilter(filter)
-                    }} />
-                </li>
-            ))}
-        </ul>
-        {/* Hidden if no completed items are left ↓ */}
-        <button className="clear-completed">Clear completed</button>
-    </footer>
-)
+const Footer = ({todos, visibility, changeFilter, clear}) => {
+    const itemsLeft = todos.filter(item => !item.completed).length;
+    const plural = itemsLeft > 1 ? 's' : '';
+    const itemsCompleted = todos.filter(item => item.completed).length;
+
+    return (
+        <footer className="footer">
+            {/* This should be `0 items left` by default */}
+            <span className="todo-count"><strong>{itemsLeft}</strong> item{plural} left</span>
+            {/* Remove this if you don't implement routing */}
+            <ul className="filters">
+                {VISIBILITY_FILTERS.map(filter => (
+                    <li key={filter}>
+                        <VisibilityLink name={filter} activeFilter={visibility} onClick={(event) => {
+                            event.preventDefault()
+                            changeFilter(filter)
+                        }} />
+                    </li>
+                ))}
+            </ul>
+            {/* Hidden if no completed items are left ↓ */}
+            {itemsCompleted > 0 &&
+                <button className="clear-completed" onClick={clear}>Clear completed</button>
+            }
+        </footer>
+    )
+}
 
 Footer.propTypes = {
+    todos: PropTypes.array.isRequired,
     visibility: PropTypes.string.isRequired,
-    changeFilter: PropTypes.func.isRequired
+    changeFilter: PropTypes.func.isRequired,
+    clear: PropTypes.func.isRequired
 };
 
 export default Footer
