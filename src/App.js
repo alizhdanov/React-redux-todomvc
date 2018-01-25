@@ -4,19 +4,31 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import 'todomvc-app-css/index.css'
 import * as TodoActions from './actions/todos'
+import * as VisibilityActions from './actions/visibility'
+import {
+    VISIBILITY_ALL,
+    VISIBILITY_ACTIVE,
+    VISIBILITY_COMPLETED,
+    CHANGE_VISIBILITY_FILTER,
+    VISIBILITY_FILTERS
+} from './reducers/visibility'
 
 // components
 import Main from './components/Main'
 import Footer from './components/Footer'
-import visibility from "./reducers/visibility";
 
 const ENTER_KEY = 13
 
 class App extends Component {
-  state = {
-    todoInput: '',
-    toggleAll: false
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            todoInput: '',
+            toggleAll: false
+        }
+
+        this.changeVisibilityFilter = this.changeVisibilityFilter.bind(this)
+    }
 
   handleChange = (event) => {
       const target = event.target;
@@ -54,9 +66,25 @@ class App extends Component {
     this.props.store.dispatch()
   }
 
+  changeVisibilityFilter (filter) {
+      this.props.actions.changeFilter(filter)
+  }
+
   render() {
-    const { todos, visibility } = this.props
-    const {editTodo} = this.props.actions
+    const { todos, visibility } = this.props;
+    const {editTodo} = this.props.actions;
+
+    const filterFunc = (todos, filter) => {
+        if(filter === VISIBILITY_COMPLETED) {
+            return todos.filter(todo => todo.completed)
+        } else if (VISIBILITY_ACTIVE) {
+            return todos.filter(todo => !todo.completed)
+        } else {
+            return todos
+        }
+    };
+
+    const filteredTodos = filterFunc(todos, visibility)
 
     return (
       <section className="todoapp">
@@ -75,12 +103,12 @@ class App extends Component {
         <Main
           toggleAll={this.allCompleted}
           onToggleAllChange={this.onToggleAllChange}
-          todos={todos} 
+          todos={filteredTodos}
           onTodoChange={editTodo}
           removeTodo={this.removeTodo}
           visibility={visibility}/>
         {/* This footer should hidden by default and shown when there are todos */}
-        <Footer todos={todos} />
+        <Footer visibility={visibility} changeFilter={this.changeVisibilityFilter} />
       </section>  
     );
   }
@@ -93,10 +121,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators(TodoActions, dispatch)
+    actions: bindActionCreators({...TodoActions, ...VisibilityActions}, dispatch)
 });
 
 App.propTypes = {
+    dispatch: PropTypes.func.isRequired,
     todos: PropTypes.array.isRequired,
     visibility: PropTypes.string.isRequired
 };

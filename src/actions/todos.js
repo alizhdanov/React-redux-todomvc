@@ -6,11 +6,11 @@ export const CHANGE_TODO : string  = 'CHANGE_TODO';
 export const TOGGLE_TODO : string  = 'TOGGLE_TODO';
 export const TOGGLE_ALL_TODOS : string  = 'TOGGLE_ALL_TODOS';
 
-type AddTodoAction = { type: 'ADD_TODO', id: number, value: string };
-type RemoveTodoAction = { type: 'REMOVE_TODO', id: number };
-type EditTodoAction = { type: 'CHANGE_TODO', id: number, value: string };
-type ToggleTodoAction = { type: 'TOGGLE_TODO', id: number };
-type ToggleAllTodoAction = { type: 'TOGGLE_ALL_TODOS', completed: boolean };
+type AddTodoAction = { type: string, id: number, value: string };
+type RemoveTodoAction = { type: string, id: number };
+type EditTodoAction = { type: string, id: number, value: string };
+type ToggleTodoAction = { type: string, id: number };
+type ToggleAllTodoAction = { type: string, completed: boolean };
 
 export type TodoAction =
     | AddTodoAction
