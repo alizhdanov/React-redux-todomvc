@@ -2,7 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TodoItem from './TodoItem'
 
-const Main = ({todos, onTodoChange, onTodoDelete, onTodoToggle, toggleAll, onToggleAllChange}) => {
+const Main = ({
+    todos,
+    onTodoChange,
+    onTodoDelete,
+    onTodoToggle,
+    onToggleAllChange
+}) => {
     const completedCount = todos.reduce((count, todo) =>
         todo.completed ? count + 1 : count,
         0
@@ -29,11 +35,16 @@ const Main = ({todos, onTodoChange, onTodoDelete, onTodoToggle, toggleAll, onTog
                 ))}
             </ul>
         </section>
-)
+    )
 };
 
 Main.propTypes = {
-    todos: PropTypes.array.isRequired
+    todos: PropTypes.array.isRequired,
+    onTodoChange: PropTypes.func.isRequired,
+    onTodoDelete: PropTypes.func.isRequired,
+    onTodoToggle: PropTypes.func.isRequired,
+    onToggleAllChange: PropTypes.func.isRequired,
+
 };
 
 export default Main

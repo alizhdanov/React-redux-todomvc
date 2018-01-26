@@ -7,7 +7,7 @@ const ESCAPE_KEY = 27;
 
 class TodoItem extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             isEditing: false,
             editedValue: this.props.value
@@ -71,7 +71,7 @@ class TodoItem extends Component {
             id,
             onTodoToggle,
             onTodoDelete,
-        } = this.props
+        } = this.props;
 
         const mainClass = classNames({
             completed,
