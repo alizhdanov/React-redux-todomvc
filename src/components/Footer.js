@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import {
     VISIBILITY_FILTERS
-} from '../reducers/visibility'
+} from '../actions/visibility'
 
 const VisibilityLink = ({name, activeFilter, onClick}) => {
     const linkClass = classNames({

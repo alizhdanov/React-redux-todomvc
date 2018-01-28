@@ -8,7 +8,7 @@ import * as VisibilityActions from './actions/visibility'
 import {
     VISIBILITY_ACTIVE,
     VISIBILITY_COMPLETED
-} from './reducers/visibility'
+} from './actions/visibility'
 
 // components
 import Main from './components/Main'

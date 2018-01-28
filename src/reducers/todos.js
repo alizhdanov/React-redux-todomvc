@@ -33,19 +33,22 @@ type Todo = {
 type State = Array<Todo>
 
 const todos = (state: State = initialState, action: TodoAction): State => {
+    let id, value, completed;
     switch(action.type) {
         case ADD_TODO:
+            value = action.value;
             return [
                 ...state,
                 {
                     id: nextTodoId++,
-                    value: action.value,
+                    value: value,
                     completed: false
                 }
             ]
         case TOGGLE_TODO:
+            id = action.id;
             return state.map(todo => {
-                if (todo.id !== action.id) {
+                if (todo.id !== id) {
                     return todo
                 }
 
@@ -55,23 +58,27 @@ const todos = (state: State = initialState, action: TodoAction): State => {
                 }
             })
         case TOGGLE_ALL_TODOS:
+            completed = action.completed;
             return state.map(item => {
-                item.completed = action.completed
+                item.completed = completed;
                 return item
             })
         case CHANGE_TODO:
+            id = action.id;
+            value = action.value;
             return state.map(todo => {
-                if (todo.id !== action.id) {
+                if (todo.id !== id) {
                     return todo
                 }
 
                 return {
                     ...todo,
-                    value: action.value
+                    value: value
                 }
             })
         case REMOVE_TODO:
-            return state.filter(todo => todo.id !== action.id)
+            id = action.id
+            return state.filter(todo => todo.id !==  id)
         case REMOVE_COMPLETED_TODOS:
             return state.filter(todo => !todo.completed);
         default:

@@ -1,18 +1,18 @@
 // @flow
 
-export const ADD_TODO : string = 'ADD_TODO';
-export const REMOVE_TODO : string  = 'REMOVE_TODO';
-export const CHANGE_TODO : string  = 'CHANGE_TODO';
-export const TOGGLE_TODO : string  = 'TOGGLE_TODO';
-export const TOGGLE_ALL_TODOS : string  = 'TOGGLE_ALL_TODOS';
-export const REMOVE_COMPLETED_TODOS : string = 'REMOVE_COMPLETED_TODOS';
+export const ADD_TODO : 'ADD_TODO' = 'ADD_TODO';
+export const REMOVE_TODO : 'REMOVE_TODO'  = 'REMOVE_TODO';
+export const CHANGE_TODO : 'CHANGE_TODO'  = 'CHANGE_TODO';
+export const TOGGLE_TODO : 'TOGGLE_TODO'  = 'TOGGLE_TODO';
+export const TOGGLE_ALL_TODOS : 'TOGGLE_ALL_TODOS'  = 'TOGGLE_ALL_TODOS';
+export const REMOVE_COMPLETED_TODOS : 'REMOVE_COMPLETED_TODOS' = 'REMOVE_COMPLETED_TODOS';
 
-type AddTodoAction = { type: string, value: string };
-type RemoveTodoAction = { type: string, id: number };
-type EditTodoAction = { type: string, id: number, value: string };
-type ToggleTodoAction = { type: string, id: number };
-type ToggleAllTodoAction = { type: string, completed: boolean };
-type RemoveCompletedTodos = { type: string};
+type AddTodoAction = { type: typeof ADD_TODO, value: string };
+type RemoveTodoAction = { type: typeof REMOVE_TODO, id: number };
+type EditTodoAction = { type: typeof CHANGE_TODO, id: number, value: string };
+type ToggleTodoAction = { type: typeof TOGGLE_TODO, id: number };
+type ToggleAllTodoAction = { type: typeof TOGGLE_ALL_TODOS, completed: boolean };
+type RemoveCompletedTodos = { type: typeof REMOVE_COMPLETED_TODOS};
 
 export type TodoAction =
     | AddTodoAction
