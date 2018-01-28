@@ -6,30 +6,22 @@ import{
     TOGGLE_ALL_TODOS,
     CHANGE_TODO,
     REMOVE_TODO,
-    REMOVE_COMPLETED_TODOS
+    REMOVE_COMPLETED_TODOS,
+    SET_STATE
 } from '../actions/todos'
 
-import type { TodoAction } from '../actions/todos'
+import type { TodoAction } from '../actions/todos';
+import storeDb from '../db'
 
-let nextTodoId = 0
-const initialState = [
-  {
-    id: 887,
-    value: 'Test',
-    completed: false
-  },
-  {
-    id: 947,
-    value: 'Muchaho',
-    completed: true
-  }
-]
-
-type Todo = {
+export type Todo = {
     id: number,
     value: string,
     completed: boolean
 }
+
+let initialState : Array<Todo> = [];
+let nextTodoId : number = 0;
+
 type State = Array<Todo>
 
 const todos = (state: State = initialState, action: TodoAction): State => {
@@ -37,13 +29,17 @@ const todos = (state: State = initialState, action: TodoAction): State => {
     switch(action.type) {
         case ADD_TODO:
             value = action.value;
+            const newTodo : Todo = {
+                id: nextTodoId++,
+                value: value,
+                completed: false
+            }
+
+            storeDb.set(newTodo);
+
             return [
                 ...state,
-                {
-                    id: nextTodoId++,
-                    value: value,
-                    completed: false
-                }
+                newTodo
             ]
         case TOGGLE_TODO:
             id = action.id;
@@ -52,17 +48,27 @@ const todos = (state: State = initialState, action: TodoAction): State => {
                     return todo
                 }
 
-                return {
+                const toggledTodo : Todo = {
                     ...todo,
                     completed: !todo.completed
                 }
+
+                storeDb.set(toggledTodo);
+
+                return toggledTodo
             })
         case TOGGLE_ALL_TODOS:
             completed = action.completed;
-            return state.map(item => {
+
+            const toggledTodos : Array<Todo> = state.map(item => {
                 item.completed = completed;
                 return item
             })
+
+            toggledTodos.forEach(todo => 
+                storeDb.set(todo))
+
+            return toggledTodos
         case CHANGE_TODO:
             id = action.id;
             value = action.value;
@@ -71,16 +77,26 @@ const todos = (state: State = initialState, action: TodoAction): State => {
                     return todo
                 }
 
-                return {
+                const newTodo : Todo = {
                     ...todo,
                     value: value
                 }
+
+                storeDb.set(newTodo)
+
+                return newTodo
             })
         case REMOVE_TODO:
             id = action.id
+
+            storeDb.delete(id)
+
             return state.filter(todo => todo.id !==  id)
         case REMOVE_COMPLETED_TODOS:
+            storeDb.deleteCompleted()
             return state.filter(todo => !todo.completed);
+        case SET_STATE:
+            return action.todos
         default:
             return state
     }
