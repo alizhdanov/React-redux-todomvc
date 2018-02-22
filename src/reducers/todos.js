@@ -25,7 +25,7 @@ const initialState = [
   }
 ]
 
-type Todo = {
+export type Todo = {
     id: number,
     value: string,
     completed: boolean
