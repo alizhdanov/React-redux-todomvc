@@ -1,6 +1,16 @@
+// @flow
+
 import React from 'react'
-import PropTypes from 'prop-types'
 import TodoItem from './TodoItem'
+
+import type { Todos } from '../reducers/todos'
+type Props = {
+    todos: Todos,
+    onTodoChange() : void,
+    onTodoDelete() : void,
+    onTodoToggle() : void,
+    onToggleAllChange() : void
+}
 
 const Main = ({
     todos,
@@ -8,7 +18,7 @@ const Main = ({
     onTodoDelete,
     onTodoToggle,
     onToggleAllChange
-}) => {
+} : Props) => {
     const completedCount = todos.reduce((count, todo) =>
         todo.completed ? count + 1 : count,
         0
@@ -36,15 +46,6 @@ const Main = ({
             </ul>
         </section>
     )
-};
-
-Main.propTypes = {
-    todos: PropTypes.array.isRequired,
-    onTodoChange: PropTypes.func.isRequired,
-    onTodoDelete: PropTypes.func.isRequired,
-    onTodoToggle: PropTypes.func.isRequired,
-    onToggleAllChange: PropTypes.func.isRequired,
-
 };
 
 export default Main

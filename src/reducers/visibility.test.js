@@ -2,7 +2,7 @@ import visibility, {
     VISIBILITY_ALL,
     VISIBILITY_ACTIVE,
     CHANGE_VISIBILITY_FILTER
-} from './visibility';
+} from '../actions/visibility';
 
 describe('visibility', () => {
     it('default filter should be ALL', () => {

@@ -1,16 +1,14 @@
-export const VISIBILITY_ALL = 'All';
-export const VISIBILITY_ACTIVE = 'Active';
-export const VISIBILITY_COMPLETED = 'Completed';
+// @flow
 
-export const VISIBILITY_FILTERS = [
-    VISIBILITY_ALL,
-    VISIBILITY_ACTIVE,
-    VISIBILITY_COMPLETED
-]
+import {
+    VISIBILITY_ALL
+} from '../actions/visibility'
+
+import type { ChangeFilter, filter } from '../actions/visibility'
 
 export const CHANGE_VISIBILITY_FILTER = 'CHANGE_VISIBILITY_FILTER';
 
-const visibility = (state = VISIBILITY_ALL, action) => {
+const visibility = (state : filter = VISIBILITY_ALL, action: ChangeFilter) => {
     switch (action.type) {
         case CHANGE_VISIBILITY_FILTER:
             return action.filter;

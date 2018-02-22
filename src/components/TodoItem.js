@@ -1,40 +1,56 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+// @flow
+
+import * as React from 'react'
 import classNames from 'classnames'
 
 const ENTER_KEY = 13;
 const ESCAPE_KEY = 27;
 
-class TodoItem extends Component {
-    constructor(props) {
+type Props = {
+    id: number,
+    value: string,
+    completed: boolean,
+    onTodoChange(number, string): void,
+    onTodoToggle(number): void,
+    onTodoDelete(number): void,
+}
+
+type State = {
+    isEditing: boolean,
+    editedValue: string
+}
+
+class TodoItem extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             isEditing: false,
             editedValue: this.props.value
         };
-
-        this.input = null;
-
-        this.hadnleEdit = this.hadnleEdit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleKeydown = this.handleKeydown.bind(this);
     }
 
-    hadnleEdit () {
+    input : ?HTMLInputElement
+
+    hadnleEdit = () => {
+        const input = this.input
+
+        if (!input) {
+            return
+        }
+
         this.setState(
             {isEditing: true},
             () => {
-                this.input.focus();
-                const tmp = this.input.value;
-                this.input.value = '';
-                this.input.value = tmp;
+                input.focus();
+                const tmp = input.value;
+                input.value = '';
+                input.value = tmp;
             }
         );
     }
 
-    handleInputChange (event) {
-        const target = event.target;
+    handleInputChange = (event: SyntheticEvent<HTMLInputElement>) => {
+        const target : HTMLInputElement = event.currentTarget;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
     
@@ -43,7 +59,7 @@ class TodoItem extends Component {
         });
     }
 
-    handleSave () {
+    handleSave = () => {
         const value = this.state.editedValue
         if (value.length) {
             this.props.onTodoChange(this.props.id, this.state.editedValue)
@@ -51,7 +67,7 @@ class TodoItem extends Component {
         }
     }
 
-    handleKeydown (event) {
+    handleKeydown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
         const key = event.keyCode;
 
         if (key === ESCAPE_KEY) {
@@ -86,7 +102,7 @@ class TodoItem extends Component {
                     <button className="destroy" onClick={() => onTodoDelete(this.props.id)} />
                 </div>
                 <input
-                    ref={input => this.input = input}
+                    ref={input => { this.input = input } }
                     autoFocus={true}
                     className="edit"
                     name="editedValue"
@@ -98,14 +114,5 @@ class TodoItem extends Component {
         )
     }
 }
-
-TodoItem.propTypes = {
-    id: PropTypes.number.isRequired,
-    value: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired,
-    onTodoChange: PropTypes.func.isRequired,
-    onTodoToggle: PropTypes.func.isRequired,
-    onTodoDelete: PropTypes.func.isRequired,
-};
 
 export default TodoItem

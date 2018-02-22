@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+// @flow
+
+import * as React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import 'todomvc-app-css/index.css'
 import * as TodoActions from './actions/todos'
 import * as VisibilityActions from './actions/visibility'
 import {
     VISIBILITY_ACTIVE,
     VISIBILITY_COMPLETED
-} from './reducers/visibility'
+} from './actions/visibility'
 
 // components
 import Main from './components/Main'
@@ -16,19 +17,50 @@ import Footer from './components/Footer'
 
 const ENTER_KEY = 13
 
-class App extends Component {
+import type {
+    TodoAction,
+    AddTodoAction,
+    RemoveTodoAction,
+    EditTodoAction,
+    ToggleTodoAction,
+    ToggleAllTodoAction,
+    RemoveCompletedTodos,
+    SetState
+} from './actions/todos'
+import type { filter, ChangeFilter } from './actions/visibility'
+import type { Todo } from './reducers/todos'
+
+type Props = {
+    todos: Array<Todo>,
+    visibility: filter,
+    allCompleted: boolean,
+    actions: {
+        addTodo(string): AddTodoAction,
+        removeTodo(number) : RemoveTodoAction,
+        editTodo(number, string) : EditTodoAction,
+        toggleTodo(boolean): ToggleTodoAction,
+        toggleAllTodos(boolean): ToggleAllTodoAction,
+        removeCompletedTodos(): RemoveCompletedTodos,
+        setState(Array<Todo>): SetState,
+        changeFilter(string): ChangeFilter
+    }
+}
+
+type State = {
+    todoInput: string,
+    toggleAll: boolean
+}
+
+class App extends React.Component<Props, State> {
     constructor(props) {
         super(props);
         this.state = {
             todoInput: '',
             toggleAll: false
         }
-
-        this.onToggleAllChange = this.onToggleAllChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange = (event) => {
+    handleChange = (event: SyntheticInputEvent<HTMLInputElement>) : void => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -38,11 +70,11 @@ class App extends Component {
         });
     }
 
-    onToggleAllChange () {
+    onToggleAllChange = () => {
         this.props.actions.toggleAllTodos(!this.props.allCompleted)
     }
 
-    handleSubmit (event) {
+    handleSubmit = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
         if (event.keyCode !== ENTER_KEY) {
             return
         }
@@ -57,7 +89,7 @@ class App extends Component {
     }
 
   render() {
-    const { todos, visibility, actions } = this.props;
+    const { todos, visibility, actions, allCompleted } = this.props;
     const {
         editTodo,
         toggleTodo,
@@ -94,7 +126,7 @@ class App extends Component {
         {/* This section should be hidden by default and shown when there are todos */}
         {todos.length > 0 &&
           <Main
-            toggleAll={this.allCompleted}
+            toggleAll={allCompleted}
             onToggleAllChange={this.onToggleAllChange}
             todos={filteredTodos}
             onTodoChange={editTodo}
@@ -124,12 +156,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators({...TodoActions, ...VisibilityActions}, dispatch)
 });
-
-App.propTypes = {
-    todos: PropTypes.array.isRequired,
-    visibility: PropTypes.string.isRequired,
-    actions: PropTypes.object.isRequired
-};
 
 export default connect(
   mapStateToProps,

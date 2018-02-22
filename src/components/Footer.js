@@ -1,12 +1,13 @@
 // @flow
 import * as React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import {
     VISIBILITY_FILTERS
-} from '../reducers/visibility'
+} from '../actions/visibility'
 
 import type { Todo } from '../reducers/todos'
+import type { filter, ChangeFilter } from '../actions/visibility'
+import type { RemoveCompletedTodos } from '../actions/todos'
 
 const VisibilityLink = ({name, activeFilter, onClick}) => {
     const linkClass = classNames({
@@ -19,8 +20,11 @@ const VisibilityLink = ({name, activeFilter, onClick}) => {
 
 type FooterProps = {
     todos: Array<Todo>,
-    visibility: String,
+    visibility: filter,
+    changeFilter(string): ChangeFilter,
+    clear(): RemoveCompletedTodos
 }
+
 // TODO: add router here
 const Footer = ({todos, visibility, changeFilter, clear} : FooterProps) => {
     const itemsLeft = todos.filter(item => !item.completed).length;
@@ -49,12 +53,5 @@ const Footer = ({todos, visibility, changeFilter, clear} : FooterProps) => {
         </footer>
     )
 }
-
-Footer.propTypes = {
-    todos: PropTypes.array.isRequired,
-    visibility: PropTypes.string.isRequired,
-    changeFilter: PropTypes.func.isRequired,
-    clear: PropTypes.func.isRequired
-};
 
 export default Footer
